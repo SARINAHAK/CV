@@ -1,0 +1,76 @@
+    body {
+        font-family: Arial, sans-serif ;
+    }
+
+    header {
+        background-color: #c4be11;
+        padding: 20px;
+        text-align: center;
+    }
+
+    nav ul {
+        list-style-type: none;
+        padding: 0;
+        text-align: center;
+    }
+
+    nav ul li {
+        display: inline;
+        margin-right: 20px;
+    }
+
+    nav ul li a {
+        text-decoration: none;
+        color: rgb(0, 0, 0);
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    section {
+        border: 1px solid #4d7905;
+        padding: 15px; 
+        margin: 20px 0;
+        box-shadow: 0 0 5px #8bbe0a;
+    }
+
+    footer {
+        background-color: #a6da08;
+        padding: 10px;
+        text-align: center;
+    }
+    /* 1. Selektor Kelas */
+    .highlight {
+        background-color: rgb(242, 255, 0);
+        font-weight: bold;
+    }
+
+    /* 2. Selektor ID */
+    #main-title {
+        color: #070505;
+        font-size: 24px;
+    }
+
+    /* 3. Selektor Atribut */
+    a[href*="instagram"] {
+        color: #050605; /* Warna khas Instagram */
+        font-weight: bold;
+    }
+
+    /* 4. Pseudo-class Selector */
+    a:hover {
+        color: #f59701; /* Warna saat hover */
+    }
+
+    /* 5. Pseudo-element Selector */
+    p::first-line {
+        font-weight: bold;
+        color: #333;
+    }
+    section {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 20px 0;
+        box-shadow: 0 0 5px #aaa;
+    }
