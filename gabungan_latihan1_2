@@ -1,0 +1,460 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/SARINAHAK/CV/blob/main/gabungan_latihan1_2\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install pyspark\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "B9QqLlihgJLn",
+        "outputId": "ed39029c-b35c-460a-f2cb-518e1dbec2d0"
+      },
+      "execution_count": 1,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: pyspark in /usr/local/lib/python3.12/dist-packages (3.5.1)\n",
+            "Requirement already satisfied: py4j==0.10.9.7 in /usr/local/lib/python3.12/dist-packages (from pyspark) (0.10.9.7)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Bagian Baru"
+      ],
+      "metadata": {
+        "id": "yt9SlwiIlqob"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from pyspark.sql import SparkSession\n",
+        "\n",
+        "spark = SparkSession.builder \\\n",
+        "    .appName(\"RDD_Creation_Lab\") \\\n",
+        "    .master(\"local[*]\") \\\n",
+        "    .getOrCreate()\n",
+        "\n",
+        "sc = spark.sparkContext\n",
+        "\n",
+        "print(\"Spark berhasil dijalankan!\")\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "eXn801eghLrk",
+        "outputId": "bafc9513-0cd5-476d-9b89-bef41af4f3d6"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Spark berhasil dijalankan!\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Data list berisi nama mahasiswa\n",
+        "data_list = [\"Andi\", \"Budi\", \"Citra\", \"Dewi\", \"Eka\",\n",
+        "             \"Fajar\", \"Gina\", \"Hadi\", \"Indra\", \"Joko\"]\n",
+        "\n",
+        "# Membuat RDD dari list nama mahasiswa\n",
+        "rdd_from_list = sc.parallelize(data_list)\n",
+        "\n",
+        "print(\"RDD dari koleksi lokal:\", rdd_from_list.collect())\n",
+        "print(\"Jumlah partisi:\", rdd_from_list.getNumPartitions())\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "zhG5JLcYhUmh",
+        "outputId": "d98689ee-4cc2-49f8-8af6-1a1971657de5"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "RDD dari koleksi lokal: ['Andi', 'Budi', 'Citra', 'Dewi', 'Eka', 'Fajar', 'Gina', 'Hadi', 'Indra', 'Joko']\n",
+            "Jumlah partisi: 2\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile text.txt\n",
+        "Halo semua\n",
+        "Saya adalah mahasiswa TI\n",
+        "Ini adalah contoh dari penerapan RDD\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "jJWbJX1Nh-Fr",
+        "outputId": "2ced02fe-a89d-41f4-967a-2216c6cb6cd2"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Writing text.txt\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "rdd_from_file = sc.textFile(\"text.txt\")\n",
+        "\n",
+        "print(\"Jumlah baris dalam file:\", rdd_from_file.count())\n",
+        "print(\"Baris pertama dalam file:\", rdd_from_file.first())\n",
+        "print(\"Jumlah partisi file:\", rdd_from_file.getNumPartitions())\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dGg9HAHyiJGr",
+        "outputId": "09e863e8-fa60-423d-9a3a-b50c6a552e41"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Jumlah baris dalam file: 3\n",
+            "Baris pertama dalam file: Halo semua\n",
+            "Jumlah partisi file: 2\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile text.txt\n",
+        "Halo semua\n",
+        "Saya adalah mahasiswa TI\n",
+        "Ini adalah contoh dari penerapan RDD\n",
+        "Spark is powerful\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "vNMBwBOziXEg",
+        "outputId": "dd185bf9-5664-427e-ef82-d8db71e513c2"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Overwriting text.txt\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "rdd_from_file = sc.textFile(\"text.txt\")\n",
+        "\n",
+        "print(\"Jumlah baris dalam file setelah ditambah:\", rdd_from_file.count())\n",
+        "print(\"Baris pertama dalam file:\", rdd_from_file.first())\n",
+        "print(\"Jumlah partisi file:\", rdd_from_file.getNumPartitions())\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "2ZWbocIMibvT",
+        "outputId": "21c4a8d2-2265-49aa-ec8f-2c3c37e80704"
+      },
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Jumlah baris dalam file setelah ditambah: 4\n",
+            "Baris pertama dalam file: Halo semua\n",
+            "Jumlah partisi file: 2\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"Partisi RDD dari list:\", rdd_from_list.getNumPartitions())\n",
+        "print(\"Partisi RDD dari file:\", rdd_from_file.getNumPartitions())\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "HI4Pz7dsif81",
+        "outputId": "e1934129-d426-4a34-f2ee-d3e02788ce6c"
+      },
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Partisi RDD dari list: 2\n",
+            "Partisi RDD dari file: 2\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Bagian Latihan 2"
+      ],
+      "metadata": {
+        "id": "eKonej6RnDD8"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "rdd_from_file = sc.textFile(\"text.txt\")\n",
+        "print(\"Total baris:\", rdd_from_file.count())\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "QIokwTW_nITC",
+        "outputId": "0a43de9c-aaaf-4603-fcff-55ce12f180e4"
+      },
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Total baris: 4\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def clean_text(line):\n",
+        "    for p in [\",\", \".\", \"!\", \"?\", \":\", \";\", \"\\\"\", \"'\"]:\n",
+        "        line = line.replace(p, \"\")\n",
+        "    return line.lower()\n",
+        "\n",
+        "words_rdd = (\n",
+        "    rdd_from_file\n",
+        "    .flatMap(lambda line: clean_text(line).split(\" \"))\n",
+        "    .filter(lambda word: len(word) > 0)\n",
+        ")\n",
+        "\n",
+        "print(words_rdd.take(10))\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "bJVbKxLNnLFo",
+        "outputId": "2e4be1d7-30cf-4bec-bf6d-796263389a2f"
+      },
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['halo', 'semua', 'saya', 'adalah', 'mahasiswa', 'ti', 'ini', 'adalah', 'contoh', 'dari']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "word_pairs = words_rdd.map(lambda word: (word, 1))\n",
+        "word_pairs.take(5)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "z_Q8JS1YnXdb",
+        "outputId": "a82ba623-38e5-4729-8246-9c8adfaba141"
+      },
+      "execution_count": 13,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[('halo', 1), ('semua', 1), ('saya', 1), ('adalah', 1), ('mahasiswa', 1)]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 13
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "word_counts = word_pairs.reduceByKey(lambda a, b: a + b)\n"
+      ],
+      "metadata": {
+        "id": "2epPOmVynhTf"
+      },
+      "execution_count": 14,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"\\n5 Kata Teratas dan Frekuensinya:\")\n",
+        "for word, count in word_counts.takeOrdered(5, key=lambda x: -x[1]):\n",
+        "    print(f\"'{word}': {count}\")\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "DzHjnssEnjl2",
+        "outputId": "d8c75e27-09c3-4b75-877b-c11d923f232d"
+      },
+      "execution_count": 15,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "\n",
+            "5 Kata Teratas dan Frekuensinya:\n",
+            "'adalah': 2\n",
+            "'halo': 1\n",
+            "'saya': 1\n",
+            "'mahasiswa': 1\n",
+            "'ti': 1\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "word_counts.saveAsTextFile(\"output_wordcount\")\n"
+      ],
+      "metadata": {
+        "id": "krtlhgFAnomc"
+      },
+      "execution_count": 16,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!ls output_wordcount\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "9OBvSb5EntjY",
+        "outputId": "fa498ab4-0c3a-45bf-d901-7cbfd3946220"
+      },
+      "execution_count": 17,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "part-00000  part-00001\t_SUCCESS\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!cat output_wordcount/part-00000\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "R9epZOYvn0pg",
+        "outputId": "67a26d8c-2da6-4a3d-c80b-a9984e04b7e2"
+      },
+      "execution_count": 18,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "('halo', 1)\n",
+            "('saya', 1)\n",
+            "('mahasiswa', 1)\n",
+            "('ti', 1)\n",
+            "('dari', 1)\n",
+            "('penerapan', 1)\n",
+            "('rdd', 1)\n",
+            "('powerful', 1)\n"
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "Selamat Datang di Colab",
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
