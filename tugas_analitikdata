@@ -1,0 +1,252 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/SARINAHAK/CV/blob/main/tugas_analitikdata\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install pyspark\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "B9QqLlihgJLn",
+        "outputId": "ed39029c-b35c-460a-f2cb-518e1dbec2d0"
+      },
+      "execution_count": 1,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: pyspark in /usr/local/lib/python3.12/dist-packages (3.5.1)\n",
+            "Requirement already satisfied: py4j==0.10.9.7 in /usr/local/lib/python3.12/dist-packages (from pyspark) (0.10.9.7)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from pyspark.sql import SparkSession\n",
+        "\n",
+        "spark = SparkSession.builder \\\n",
+        "    .appName(\"RDD_Creation_Lab\") \\\n",
+        "    .master(\"local[*]\") \\\n",
+        "    .getOrCreate()\n",
+        "\n",
+        "sc = spark.sparkContext\n",
+        "\n",
+        "print(\"Spark berhasil dijalankan!\")\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "eXn801eghLrk",
+        "outputId": "bafc9513-0cd5-476d-9b89-bef41af4f3d6"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Spark berhasil dijalankan!\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Data list berisi nama mahasiswa\n",
+        "data_list = [\"Andi\", \"Budi\", \"Citra\", \"Dewi\", \"Eka\",\n",
+        "             \"Fajar\", \"Gina\", \"Hadi\", \"Indra\", \"Joko\"]\n",
+        "\n",
+        "# Membuat RDD dari list nama mahasiswa\n",
+        "rdd_from_list = sc.parallelize(data_list)\n",
+        "\n",
+        "print(\"RDD dari koleksi lokal:\", rdd_from_list.collect())\n",
+        "print(\"Jumlah partisi:\", rdd_from_list.getNumPartitions())\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "zhG5JLcYhUmh",
+        "outputId": "d98689ee-4cc2-49f8-8af6-1a1971657de5"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "RDD dari koleksi lokal: ['Andi', 'Budi', 'Citra', 'Dewi', 'Eka', 'Fajar', 'Gina', 'Hadi', 'Indra', 'Joko']\n",
+            "Jumlah partisi: 2\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile text.txt\n",
+        "Halo semua\n",
+        "Saya adalah mahasiswa TI\n",
+        "Ini adalah contoh dari penerapan RDD\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "jJWbJX1Nh-Fr",
+        "outputId": "2ced02fe-a89d-41f4-967a-2216c6cb6cd2"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Writing text.txt\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "rdd_from_file = sc.textFile(\"text.txt\")\n",
+        "\n",
+        "print(\"Jumlah baris dalam file:\", rdd_from_file.count())\n",
+        "print(\"Baris pertama dalam file:\", rdd_from_file.first())\n",
+        "print(\"Jumlah partisi file:\", rdd_from_file.getNumPartitions())\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dGg9HAHyiJGr",
+        "outputId": "09e863e8-fa60-423d-9a3a-b50c6a552e41"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Jumlah baris dalam file: 3\n",
+            "Baris pertama dalam file: Halo semua\n",
+            "Jumlah partisi file: 2\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile text.txt\n",
+        "Halo semua\n",
+        "Saya adalah mahasiswa TI\n",
+        "Ini adalah contoh dari penerapan RDD\n",
+        "Spark is powerful\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "vNMBwBOziXEg",
+        "outputId": "dd185bf9-5664-427e-ef82-d8db71e513c2"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Overwriting text.txt\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "rdd_from_file = sc.textFile(\"text.txt\")\n",
+        "\n",
+        "print(\"Jumlah baris dalam file setelah ditambah:\", rdd_from_file.count())\n",
+        "print(\"Baris pertama dalam file:\", rdd_from_file.first())\n",
+        "print(\"Jumlah partisi file:\", rdd_from_file.getNumPartitions())\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "2ZWbocIMibvT",
+        "outputId": "21c4a8d2-2265-49aa-ec8f-2c3c37e80704"
+      },
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Jumlah baris dalam file setelah ditambah: 4\n",
+            "Baris pertama dalam file: Halo semua\n",
+            "Jumlah partisi file: 2\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"Partisi RDD dari list:\", rdd_from_list.getNumPartitions())\n",
+        "print(\"Partisi RDD dari file:\", rdd_from_file.getNumPartitions())\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "HI4Pz7dsif81",
+        "outputId": "e1934129-d426-4a34-f2ee-d3e02788ce6c"
+      },
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Partisi RDD dari list: 2\n",
+            "Partisi RDD dari file: 2\n"
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "Selamat Datang di Colab",
+      "toc_visible": true,
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
